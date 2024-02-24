@@ -1,0 +1,20 @@
+/* src/App.css */
+.App {
+  display: flex;
+  height: 100vh;
+  background-color: #000; /* Night mode background */
+  color: white;
+}
+
+.vertical-section {
+  flex: 1; /* Each section takes up one third of the space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.divider {
+  width: 1px;
+  background-color: #555; /* Subtle divider color */
+  height: 100%;
+}
