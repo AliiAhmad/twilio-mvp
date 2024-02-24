@@ -54,18 +54,23 @@ const Dialer: React.FC = () => {
     e.preventDefault();
     console.log('Initiating call to:', input);
     if (device) {
-      const params : any = { To: '+19292243712' };
-      device.connect(params);
-      // setCallActive(true);
+      device.connect({
+        params: {
+          To: input
+        },
+        rtcConstraints: {
+          audio: true
+        }
+      });
+      setCallActive(true);
     }
   };
 
   const handleCancel = (e: any) => {
     console.log('Initiating call to:', input);
     if (device) {
-      const params : any = { To: '+19292243712' };
-      device.connect(params);
-      // setCallActive(true);
+      device.disconnectAll();
+      setCallActive(false);
     }
   };
 
@@ -96,7 +101,7 @@ const Dialer: React.FC = () => {
             &#x260E; {/* Telephone icon */}
           </button>:
           <button className={styles.cancelButton} onClick={handleCancel}>
-            X {/* Telephone icon */}
+            &#x1F4DE;  {/* Telephone icon */}
           </button>
         }
         {/* Backspace button; only visible when there's input */}
