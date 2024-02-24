@@ -12,25 +12,18 @@ const Dialer: React.FC = () => {
   useEffect(()=>{
     console.log(callActive);
   },[callActive])
+
   useEffect(() => {
     
     const fetchToken = async () => {
         try {
-          const response = await axios.get('http://localhost:4000/token');
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/token`);
           const data = response.data;
           // Setup Twilio Device with the token
           const newDevice = new Device(data.token) as any;
-          
-          // newDevice.on('ready', () => {
-          //   console.log('Twilio.Device Ready!');
-          //   setDevice(newDevice);
-          // });
           newDevice.on('disconnect', () => {
             console.log('Call ended');
             setCallActive(false);
-            // setNotification('Call ended');
-            // Reset the notification after a delay
-            // setTimeout(() => setNotification(''), 3000);
           });
 
           setDevice(newDevice);

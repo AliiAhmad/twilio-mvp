@@ -1,14 +1,22 @@
 import express, { Request, Response } from 'express';
 import twilio from 'twilio';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
+if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_API_KEY_SID || !process.env.TWILIO_API_KEY_SECRET) {
+    throw new Error("Required environment variables are not set");
+}
+// Use environment variables
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const apiKeySid = process.env.TWILIO_API_KEY_SID;
+const apiKeySecret = process.env.TWILIO_API_KEY_SECRET;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+const twimlAppSid = process.env.TWILIO_TWIML_APP_SID;
+const port = process.env.PORT; // You can choose a different port if necessary
 
 const app = express();
-const port = 4000; // You can choose a different port if necessary
-
-// Replace these with your Twilio credentials
-const accountSid = 'AC8f2dd258f68d3bcaed77ac8a68d7e0ee';
-const authToken = 'f0fea96659957df6a00d4c5ed544dd4f';
-const twilioPhoneNumber = '+18332743532'
 
 const twilioClient = twilio(accountSid, authToken);
 
@@ -31,18 +39,16 @@ app.post('/voice', (req: Request, res: Response) => {
 });
 
 // Endpoint to generate a Twilio JWT token
-app.get('/token', (req: Request, res: Response) => {
+app.post('/token', (req: Request, res: Response) => {
     const { AccessToken } = twilio.jwt;
     const { VoiceGrant } = AccessToken;
-
-    const apiKeySid = 'SKf6aab7d983e5835cedd082e06348c911';
-    const apiKeySecret = 'IUBNTovaeeXAQpMPFRiOqlAWTPosXWkm';
+    const {user_id} = req.body;
     const identity = 'UNIQUE_USER_IDENTITY'; // Replace with the user's identity
 
     const accessToken = new AccessToken(accountSid, apiKeySid, apiKeySecret, { identity });
 
     const voiceGrant = new VoiceGrant({
-      outgoingApplicationSid: 'AP439f0c57e32f70b260a668e5c946c9b8', // Replace with your TwiML Application SID
+      outgoingApplicationSid: twimlAppSid, // Replace with your TwiML Application SID
       incomingAllow: true, // Optional: set to true if you want to receive incoming calls
     });
 
